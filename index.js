@@ -1,6 +1,24 @@
-var http = require('http')
+var express = require('express'),
+  app = express(),
+  port = process.env.PORT || 3000,
+  mongoose = require('mongoose'),
+  Run = require('./api/models/runModel'), //created model loading here
+  bodyParser = require('body-parser');
+  
+// mongoose instance connection url connection
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb+srv://demo:'+process.env.DB_PW+'@cluster0.nlxri.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'); 
 
-http.createServer(function (request, response){
-	response.writeHead(200, {"Content-Type": "text/plain"})
-	response.end("Hello World\n")
-}).listen(process.env.PORT)
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
+var routes = require('./api/routes/runRoute'); //importing route
+routes(app); //register the route
+
+
+app.listen(port);
+
+
+console.log('test list RESTful API server started on: ' + port);
