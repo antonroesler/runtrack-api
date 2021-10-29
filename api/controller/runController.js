@@ -1,6 +1,27 @@
 'use strict';
 
 
+function parseRun(json){
+  return {
+    "distance": json.distance.qty,
+    "elevation": json.elevation.ascent,
+    "humidity": json.humidity.qty,
+    "activeEnergy": json.activeEnergy.qty,
+    "avgHeartRate": json.avgHeartRate.qty,
+    "totalEnergy": json.totalEnergy.qty,
+    "stepCount": json.stepCount.qty,
+    "stepCadence": json.stepCadence.qty,
+    "speed": json.speed.qty,
+    "intensity": json.intensity.qty,
+    "maxHeartRate": json.maxHeartRate.qty,
+    "temperature": json.temperature.qty,
+    "flightsClimbed": json.flightsClimbed.qty,
+    "start": json.start,
+    "end": json.end
+  }
+}
+
+
 var mongoose = require('mongoose'),
   Run = mongoose.model('Run');
 
@@ -16,12 +37,14 @@ exports.list_all_runs = function(req, res) {
 
 
 exports.create_a_run = function(req, res) {
-  var new_run = new Run(req.body);
-  new_run.save(function(err, run) {
-    if (err)
-      res.send(err);
-    res.json(run);
-  });
+  for (let run of req.body.data.workouts){
+    var new_run = new Run(parseRun(run));
+    new_run.save(function(err, run) {
+      if (err)
+        res.send(err);
+      res.json(run);
+    });
+  }
 };
 
 
@@ -54,4 +77,3 @@ exports.delete_a_run = function(req, res) {
     res.json({ message: 'Run successfully deleted' });
   });
 };
-

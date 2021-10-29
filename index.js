@@ -4,7 +4,8 @@ var express = require('express'),
   mongoose = require('mongoose'),
   Run = require('./api/models/runModel'), //created model loading here
   bodyParser = require('body-parser');
-  
+
+app.use(bodyParser.json({limit: '200mb'}));
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb+srv://demo:'+process.env.DB_PW+'@cluster0.nlxri.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'); 
