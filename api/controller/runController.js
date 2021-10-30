@@ -37,15 +37,20 @@ exports.list_all_runs = function(req, res) {
 
 
 exports.create_a_run = function(req, res) {
+  let json = {"saved": []}
   for (let run of req.body.data.workouts){
     run = parseRun(run)
     var new_run = new Run(run);
     new_run.save(function(err, run) {
-      if (err)
+      if (err){
         res.send(err);
-      res.json(run);
+      } else {
+        json.saved.push(run)
+      }
+      
     });
   }
+  res.json(run);
 };
 
 
