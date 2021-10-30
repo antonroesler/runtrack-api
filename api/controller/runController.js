@@ -50,7 +50,7 @@ exports.create_a_run = function(req, res) {
       
     });
   }
-  res.json(run);
+  res.json(json);
 };
 
 
