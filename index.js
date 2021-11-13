@@ -8,7 +8,7 @@ var express = require('express'),
 app.use(bodyParser.json({limit: '200mb'}));
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb+srv://demo:'+process.env.DB_PW+'@cluster0.nlxri.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'); 
+mongoose.connect('mongodb+srv://demo:'+process.env.DB_PW+'@cluster0.nlxri.mongodb.net/test_1?retryWrites=true&w=majority'); 
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
