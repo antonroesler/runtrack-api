@@ -17,7 +17,9 @@ function parseRun(json){
     "temperature": json.temperature.qty,
     "flightsClimbed": json.flightsClimbed.qty,
     "start": json.start,
-    "end": json.end
+    "end": json.end,
+    "hrData": aggregate_heart_rate(json.heartRate),
+    "shoe": undefined
   }
 }
 
@@ -83,3 +85,22 @@ exports.delete_a_run = function(req, res) {
     res.json({ message: 'Run successfully deleted' });
   });
 };
+
+
+function aggregate_heart_rate(hr_raw){
+  var hr_data = {}
+  var bpms = hr_raw.map(entry => entry.qty)
+
+  hr_data.avg = bpms.reduce((a, b) => a + b, 0) / bpms.length
+  hr_data.max = Math.max(...bpms)
+  hr_data.min = Math.min(...bpms)
+  hr_data.std = Math.sqrt(bpms.reduce((a, b) => a + b * b, 0) / bpms.length - hr_data.avg * hr_data.avg)
+  bpms = bpms.sort()
+  hr_data.median = bpms[Math.floor(bpms.length / 2)]
+  hr_data.q1 = bpms[Math.floor(bpms.length / 4)]
+  hr_data.q3 = bpms[Math.floor(bpms.length * 3 / 4)]
+  hr_data.p1 = bpms[Math.floor(bpms.length / 10)]
+  hr_data.p9 = bpms[Math.floor(bpms.length * 9 / 10)]
+  hr_data.iqr = hr_data.q3 - hr_data.q1
+  return hr_data
+}
