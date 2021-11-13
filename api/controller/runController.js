@@ -115,7 +115,7 @@ function aggregate_heart_rate(hr_raw) {
 
 function find_duplicate(runs, run) {
   for (let r of runs) {
-    if (Date(r.start) == Date(run.start) && Date(r.end) == Date(run.end)) {
+    if (String(r.start) == String(run.start) && String(r.end) == String(run.end)) {
       return r
     }
   }
