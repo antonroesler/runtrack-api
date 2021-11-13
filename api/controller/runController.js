@@ -1,7 +1,7 @@
 'use strict';
 
 
-function parseRun(json){
+function parseRun(json) {
   return {
     "distance": json.distance.qty,
     "elevation": json.elevation.ascent,
@@ -27,8 +27,8 @@ function parseRun(json){
 var mongoose = require('mongoose'),
   Run = mongoose.model('Run');
 
-exports.list_all_runs = function(req, res) {
-  Run.find({}, function(err, run) {
+exports.list_all_runs = function (req, res) {
+  Run.find({}, function (err, run) {
     if (err)
       res.send(err);
     res.json(run);
@@ -38,26 +38,33 @@ exports.list_all_runs = function(req, res) {
 
 
 
-exports.create_a_run = function(req, res) {
-  let json = {"saved": []}
-  for (let run of req.body.data.workouts){
-    run = parseRun(run)
-    var new_run = new Run(run);
-    new_run.save(function(err, run) {
-      if (err){
-        res.send(err);
-      } else {
-        json.saved.push(run)
-      }
-      
-    });
-  }
-  res.json(json);
+exports.create_a_run = function (req, res) {
+  let json = { "saved": [] }
+  Run.find({}, function (err, runs) {
+    if (err) 
+      res.send(err);
+    console.log("XXX");
+    console.log(runs);
+    for (let run of req.body.data.workouts) {
+      run = parseRun(run)
+      var new_run = new Run(run);
+      if (find_duplicate(runs, new_run) === null) {
+        new_run.save(function (err, run) {
+          if (err) 
+            res.send(err);
+          json.saved.push(run)  
+        });
+      } 
+    }
+    res.json(json);
+});
+
+  
 };
 
 
-exports.read_a_run = function(req, res) {
-  Run.findById(req.params.runId, function(err, run) {
+exports.read_a_run = function (req, res) {
+  Run.findById(req.params.runId, function (err, run) {
     if (err)
       res.send(err);
     res.json(run);
@@ -65,8 +72,8 @@ exports.read_a_run = function(req, res) {
 };
 
 
-exports.update_a_run = function(req, res) {
-  Run.findOneAndUpdate({_id: req.params.runId}, req.body, {new: true}, function(err, run) {
+exports.update_a_run = function (req, res) {
+  Run.findOneAndUpdate({ _id: req.params.runId }, req.body, { new: true }, function (err, run) {
     if (err)
       res.send(err);
     res.json(run);
@@ -74,12 +81,12 @@ exports.update_a_run = function(req, res) {
 };
 
 
-exports.delete_a_run = function(req, res) {
+exports.delete_a_run = function (req, res) {
 
 
   Run.remove({
     _id: req.params.runId
-  }, function(err, run) {
+  }, function (err, run) {
     if (err)
       res.send(err);
     res.json({ message: 'Run successfully deleted' });
@@ -87,7 +94,7 @@ exports.delete_a_run = function(req, res) {
 };
 
 
-function aggregate_heart_rate(hr_raw){
+function aggregate_heart_rate(hr_raw) {
   var hr_data = {}
   var bpms = hr_raw.map(entry => entry.qty)
 
@@ -103,4 +110,14 @@ function aggregate_heart_rate(hr_raw){
   hr_data.p9 = bpms[Math.floor(bpms.length * 9 / 10)]
   hr_data.iqr = hr_data.q3 - hr_data.q1
   return hr_data
+}
+
+
+function find_duplicate(runs, run) {
+  for (let r of runs) {
+    if (Date(r.start) == Date(run.start) && Date(r.end) == Date(run.end)) {
+      return r
+    }
+  }
+  return null
 }
