@@ -18,7 +18,7 @@ function parseRun(json){
     "flightsClimbed": json.flightsClimbed.qty,
     "start": json.start,
     "end": json.end,
-    "hrData": aggregate_heart_rate(json.heartRate),
+    "hrData": aggregate_heart_rate(json.heartRateData),
     "shoe": undefined
   }
 }
