@@ -101,19 +101,22 @@ exports.monthly_kms = function (req, res) {
       const y = element.start.getFullYear()
       const m = element.start.getMonth()+1
       const km = element.distance
-      const d = "" + m + "." + y
-      if (months[d] != undefined){
-        months[d] += km
-      } else {
-      months[d] = km
-      }
+      const x = element.speed;
+      if (x > 10){
+        const d = "" + m + "." + y
+        if (months[d] != undefined){
+            months[d] += km
+        } else {
+        months[d] = km
+        }
+        }
     }
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.json({"data": months})
 })
 }
 
-exports.testm = function (req, res) {
+exports.hr_speed = function (req, res) {
     const data = []
     Run.find().exec(function (err, runs) {
       for (let i = 0; i < runs.length; i++) {
@@ -129,7 +132,50 @@ exports.testm = function (req, res) {
       res.setHeader("Access-Control-Allow-Origin", "*")
       res.json({"data": data})
   })
+}
+
+exports.run_type = function (req, res) {
+    const data = {20: 0, 10: 0, 0: 0};
+    Run.find().exec(function (err, runs) {
+      for (let i = 0; i < runs.length; i++) {
+        const element = runs[i];
+        const x = element.speed
+        const km = element.distance
+        if (x > 10){
+            if (km > 20){
+                data[20] += km
+            } else if (km > 10){
+                data[10] += km
+            }
+            else{
+                data[0] += km
+            }
+        }
+        
+      }
+      
+      res.setHeader("Access-Control-Allow-Origin", "*")
+      res.json({data})
+  })
   }
+
+  exports.hr_speed_distance = function (req, res) {
+    const data = []
+    Run.find().exec(function (err, runs) {
+      for (let i = 0; i < runs.length; i++) {
+        const element = runs[i];
+        const y = Math.round(element.avgHeartRate);
+        const x = element.speed
+        const r = element.distance / 7
+        if (x > 10 && y > 100){
+            data.push({x: x, y: y, r: r})
+        }
+        
+      }
+      res.setHeader("Access-Control-Allow-Origin", "*")
+      res.json({"data": data})
+  })
+}
 
 function aggregate_heart_rate(hr_raw) {
     var hr_data = {};

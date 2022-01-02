@@ -16,6 +16,12 @@ module.exports = function(app) {
   app.route('/monthly')
     .get(run.monthly_kms)
   
-  app.route('/test')
-    .get(run.testm)
+  app.route('/hrspeed')
+    .get(run.hr_speed)
+  
+    app.route('/hrspeeddistance')
+    .get(run.hr_speed_distance)
+  
+    app.route('/type')
+    .get(run.run_type)
 };
