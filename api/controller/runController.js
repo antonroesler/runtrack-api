@@ -124,7 +124,7 @@ exports.hr_speed = function (req, res) {
         const y = Math.round(element.avgHeartRate);
         const x = element.speed
         //const km = element.distance
-        if (x > 10 && y > 100){
+        if (10 < x && y > 100 && (x < 19 || y > 175)){
             data.push({x: x, y: y})
         }
         
