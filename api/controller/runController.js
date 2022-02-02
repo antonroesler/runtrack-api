@@ -28,6 +28,7 @@ var mongoose = require("mongoose"),
 exports.list_all_runs = function (req, res) {
     Run.find({}, function (err, run) {
         if (err) res.send(err);
+        res.setHeader("Access-Control-Allow-Origin", "*")
         res.json(run);
     });
 };
@@ -53,6 +54,7 @@ exports.create_a_run = function (req, res) {
 exports.read_a_run = function (req, res) {
     Run.findById(req.params.runId, function (err, run) {
         if (err) res.send(err);
+        res.setHeader("Access-Control-Allow-Origin", "*")
         res.json(run);
     });
 };
